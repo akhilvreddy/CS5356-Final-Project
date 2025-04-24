@@ -37,20 +37,24 @@ export default function Home() {
             </Link>
             
             <div className="flex space-x-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="nav-btn"
-              >
-                Sign Up
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="nav-btn bg-white/10 hover:bg-white/15"
-              >
-                Log In
-              </motion.button>
+              <Link href="/signup">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="nav-btn"
+                >
+                  Sign Up
+                </motion.button>
+              </Link>
+              <Link href="/login">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="nav-btn bg-white/10 hover:bg-white/15"
+                >
+                  Log In
+                </motion.button>
+              </Link>
             </div>
           </motion.div>
         )}
@@ -76,6 +80,50 @@ export default function Home() {
             >
               Wordle Circles
             </motion.h1>
+            
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="mt-8 text-gray-400 text-sm flex justify-center space-x-6"
+            >
+              <span className="px-3 py-1 rounded-full bg-gray-900/40 backdrop-blur-sm">Akhil</span>
+              <span className="px-3 py-1 rounded-full bg-gray-900/40 backdrop-blur-sm">Dennis</span>
+              <span className="px-3 py-1 rounded-full bg-gray-900/40 backdrop-blur-sm">Rishab</span>
+            </motion.div>
+          </motion.div>
+        )}
+        
+        {/* GitHub Logo Link */}
+        {!loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 1.2 }}
+            className="fixed bottom-6 flex justify-center w-full z-10"
+          >
+            <a 
+              href="https://github.com/akhilvreddy/CS5356-Final-Project" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center space-x-2 bg-gray-900/30 backdrop-blur-sm px-3 py-2 rounded-full hover:bg-gray-800/40 transition-colors duration-300"
+            >
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="20" 
+                height="20" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className="text-gray-300"
+              >
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+              </svg>
+              <span className="text-xs text-gray-300">GitHub</span>
+            </a>
           </motion.div>
         )}
         

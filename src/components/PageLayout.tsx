@@ -17,12 +17,12 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             </Link>
             
             <div className="flex space-x-4">
-              <span className="nav-btn">
+              <Link href="/signup" className="nav-btn">
                 Sign Up
-              </span>
-              <span className="nav-btn bg-white/10 hover:bg-white/15">
+              </Link>
+              <Link href="/login" className="nav-btn bg-white/10 hover:bg-white/15">
                 Log In
-              </span>
+              </Link>
             </div>
           </div>
         </div>

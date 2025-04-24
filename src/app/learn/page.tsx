@@ -114,11 +114,67 @@ export default function LearnPage() {
               ))}
             </motion.div>
             
+            {/* App Integration */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.7 }}
+              className="border-t border-gray-800 pt-12 mt-16"
+            >
+              <h2 className="text-3xl font-bold text-center mb-8 text-gray-100">App Integration</h2>
+              <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-8">
+                <div className="flex flex-col md:flex-row items-center">
+                  <div className="mb-6 md:mb-0 md:mr-8 flex-shrink-0">
+                    <div className="bg-gray-800 p-4 rounded-xl max-w-[200px]">
+                      <div className="rounded-lg bg-gray-700 p-3 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                          <line x1="8" y1="21" x2="16" y2="21"></line>
+                          <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                        <p className="mt-3 text-sm text-gray-300">Wordle Circles App</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold mb-3 text-gray-100">Direct App Integration</h3>
+                    <p className="text-gray-400 mb-4">
+                      For a more integrated experience, you can submit your Wordle results directly through our app interface.
+                    </p>
+                    <p className="text-gray-400 mb-4">
+                      After completing your daily Wordle puzzle, simply open the Wordle Circles app, navigate to "Submit Score," and paste or manually enter your results.
+                    </p>
+                    <div className="bg-gray-800 rounded-lg p-4 mb-3">
+                      <div className="flex items-center mb-2 border-b border-gray-700 pb-2">
+                        <div className="bg-gray-700 rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                          <span className="text-xs text-gray-300">1</span>
+                        </div>
+                        <p className="text-gray-300 text-sm">Select "Submit Today's Wordle" from your dashboard</p>
+                      </div>
+                      <div className="flex items-center mb-2 border-b border-gray-700 pb-2">
+                        <div className="bg-gray-700 rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                          <span className="text-xs text-gray-300">2</span>
+                        </div>
+                        <p className="text-gray-300 text-sm">Choose the circle(s) you want to share with</p>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="bg-gray-700 rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                          <span className="text-xs text-gray-300">3</span>
+                        </div>
+                        <p className="text-gray-300 text-sm">Paste or input your Wordle results and hit "Share"</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-400 text-sm">The app automatically recognizes the Wordle pattern and updates your statistics across all selected circles.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+            
             {/* SMS Integration */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.8 }}
+              transition={{ duration: 0.5, delay: 0.9 }}
               className="border-t border-gray-800 pt-12 mt-16"
             >
               <h2 className="text-3xl font-bold text-center mb-8 text-gray-100">SMS Integration</h2>
