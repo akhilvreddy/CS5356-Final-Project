@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import PageLayout from '@/components/PageLayout';
 
 export default function SignUpPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,6 +20,36 @@ export default function SignUpPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    // Remove automatic redirect - we'll show AlreadyAuthenticated component instead
+    // but still allow accessing the page
+    if (status === 'authenticated' && session && router.query?.force === 'redirect') {
+      router.push('/');
+    }
+  }, [status, session, router]);
+
+  // If already authenticated, show the authenticated component
+  if (status === 'authenticated' && session) {
+    return (
+      <PageLayout>
+        <AlreadyAuthenticated />
+      </PageLayout>
+    );
+  }
+  
+  // If still loading auth state, show a loading indicator
+  if (status === 'loading') {
+    return (
+      <PageLayout>
+        <div className="min-h-[60vh] flex flex-col items-center justify-center">
+          <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400">Checking login status...</p>
+        </div>
+      </PageLayout>
+    );
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -98,7 +130,7 @@ export default function SignUpPage() {
         throw new Error(data.error || 'Registration failed');
       }
       
-      // Success! Redirect to login page
+      // Success! Redirect to login page with success message
       router.push('/login?registered=true');
       
     } catch (error) {

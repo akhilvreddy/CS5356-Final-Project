@@ -4,12 +4,17 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { signIn, useSession } from 'next-auth/react';
 import PageLayout from '@/components/PageLayout';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const justRegistered = searchParams.get('registered') === 'true';
+  const authError = searchParams.get('error');
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginError, setLoginError] = useState('');
@@ -20,6 +25,15 @@ export default function LoginPage() {
     rememberMe: false
   });
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    // Remove automatic redirect - we'll show AlreadyAuthenticated component instead
+    // but still allow accessing the page
+    if (status === 'authenticated' && session && searchParams.get('force') === 'redirect') {
+      router.push('/dashboard');
+    }
+  }, [status, session, router, searchParams]);
+  
   useEffect(() => {
     if (justRegistered) {
       setShowSuccessMessage(true);
@@ -29,7 +43,34 @@ export default function LoginPage() {
       
       return () => clearTimeout(timer);
     }
-  }, [justRegistered]);
+    
+    if (authError) {
+      setLoginError(authError === 'CredentialsSignin' 
+        ? 'Invalid email or password' 
+        : 'Authentication error');
+    }
+  }, [justRegistered, authError]);
+
+  // If already authenticated, show the authenticated component
+  if (status === 'authenticated' && session) {
+    return (
+      <PageLayout>
+        {/* <AlreadyAuthenticated /> */}
+      </PageLayout>
+    );
+  }
+  
+  // If still loading auth state, show a loading indicator
+  if (status === 'loading') {
+    return (
+      <PageLayout>
+        <div className="min-h-[60vh] flex flex-col items-center justify-center">
+          <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-gray-400">Checking login status...</p>
+        </div>
+      </PageLayout>
+    );
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -49,36 +90,24 @@ export default function LoginPage() {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-        }),
+      const result = await signIn('credentials', {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+        callbackUrl: '/dashboard'
       });
       
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+      if (result?.error) {
+        setLoginError(result.error === 'CredentialsSignin' 
+          ? 'Invalid email or password' 
+          : result.error);
+      } else if (result?.url) {
+        // Always redirect to dashboard instead of following result.url
+        router.push('/dashboard');
       }
-      
-      // Login successful! 
-      // In a real app, you would store the user data in a context or state management system
-      console.log('Logged in successfully:', data.user);
-      
-      // Redirect to home or dashboard page
-      router.push('/');
-      
     } catch (error) {
-      if (error instanceof Error) {
-        setLoginError(error.message);
-      } else {
-        setLoginError('An unexpected error occurred');
-      }
+      setLoginError('An unexpected error occurred');
+      console.error('Login error:', error);
     } finally {
       setIsSubmitting(false);
     }
@@ -179,20 +208,6 @@ export default function LoginPage() {
                     className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter your password"
                   />
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    id="rememberMe"
-                    name="rememberMe"
-                    type="checkbox"
-                    checked={formData.rememberMe}
-                    onChange={handleChange}
-                    className="h-4 w-4 bg-gray-800 border-gray-600 rounded text-gray-500 focus:ring-gray-500 focus:ring-offset-gray-800"
-                  />
-                  <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-400">
-                    Remember me
-                  </label>
                 </div>
 
                 <div className="pt-4">

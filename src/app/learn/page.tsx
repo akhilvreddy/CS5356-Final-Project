@@ -2,6 +2,7 @@
 
 import PageLayout from '@/components/PageLayout';
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 export default function LearnPage() {
   const features = [
@@ -219,9 +220,9 @@ export default function LearnPage() {
               className="text-center mt-16"
             >
               <h2 className="text-2xl font-bold mb-6 text-gray-100">Ready to start sharing your Wordle journey?</h2>
-              <button className="nav-btn bg-white/10 hover:bg-white/15 hover:scale-105 transform transition-transform duration-200">
+              <Link href="/signup" className="nav-btn bg-white/10 hover:bg-white/15 hover:scale-105 transform transition-transform duration-200 inline-block">
                 Create Your Account
-              </button>
+              </Link>
             </motion.div>
           </div>
         </div>
