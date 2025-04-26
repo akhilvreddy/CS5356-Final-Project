@@ -65,63 +65,51 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
             {/* Desktop navigation */}
             <div className="hidden md:flex space-x-4 items-center">
               {status === 'loading' ? (
-                // Show loading skeleton while checking auth status
+                // Show loading skeleton
                 <div className="h-9 w-24 bg-gray-800/50 animate-pulse rounded-full"></div>
               ) : userLoggedIn ? (
-                // USER IS LOGGED IN - Show user menu AND login/signup links
-                <>
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowMenu(!showMenu)}
-                      className="flex items-center space-x-2 text-gray-300 hover:text-white px-3 py-2 rounded-full hover:bg-white/5 transition-colors"
-                    >
-                      <span className="text-green-400">
-                        {session?.user?.name || session?.user?.email?.split('@')[0] || 'User'}
-                      </span>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                    
-                    <AnimatePresence>
-                      {showMenu && (
-                        <motion.div 
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ duration: 0.2 }}
-                          className="absolute right-0 mt-2 w-48 bg-gray-900 rounded-md shadow-lg border border-gray-800 overflow-hidden z-50"
-                        >
-                          <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
-                            Dashboard
-                          </Link>
-                          <Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
-                            Profile
-                          </Link>
-                          <Link href="/submit-wordle" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
-                            Submit Wordle
-                          </Link>
-                          <button
-                            onClick={handleSignOut}
-                            className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors"
-                          >
-                            Sign Out
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
+                // USER IS LOGGED IN - Only show user menu
+                <div className="relative">
+                  <button
+                    onClick={() => setShowMenu(!showMenu)}
+                    className="flex items-center space-x-2 text-gray-300 hover:text-white px-3 py-2 rounded-full hover:bg-white/5 transition-colors"
+                  >
+                    <span className="text-green-400">
+                      {session?.user?.name || session?.user?.email?.split('@')[0] || 'User'}
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
                   
-                  {/* Always show login/signup links */}
-                  <div className="ml-4 flex space-x-2">
-                    <Link href="/signup" className="nav-btn text-sm py-1.5">
-                      Sign Up
-                    </Link>
-                    <Link href="/login" className="nav-btn bg-white/10 hover:bg-white/15 text-sm py-1.5">
-                      Log In
-                    </Link>
-                  </div>
-                </>
+                  <AnimatePresence>
+                    {showMenu && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute right-0 mt-2 w-48 bg-gray-900 rounded-md shadow-lg border border-gray-800 overflow-hidden z-50"
+                      >
+                        <Link href="/dashboard" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
+                          Dashboard
+                        </Link>
+                        <Link href="/profile" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
+                          Profile
+                        </Link>
+                        <Link href="/submit-wordle" className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors">
+                          Submit Wordle
+                        </Link>
+                        <button
+                          onClick={handleSignOut}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 transition-colors"
+                        >
+                          Sign Out
+                        </button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               ) : (
                 // USER IS NOT LOGGED IN - Show login/signup buttons
                 <>
@@ -172,38 +160,35 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
               <div className="px-2 pt-2 pb-3 space-y-1 border-t border-gray-800">
                 {status === 'loading' ? (
                   <div className="h-10 mx-3 bg-gray-800/50 animate-pulse rounded"></div>
-                ) : (
+                ) : userLoggedIn ? (
+                  // USER IS LOGGED IN - Show user links
                   <>
-                    {/* Always show login/signup links, regardless of auth status */}
+                    <div className="px-3 py-1 text-xs text-gray-500">ACCOUNT</div>
+                    <Link href="/dashboard" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
+                      Dashboard
+                    </Link>
+                    <Link href="/profile" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
+                      Profile
+                    </Link>
+                    <Link href="/submit-wordle" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
+                      Submit Wordle
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="w-full text-left px-3 py-2 rounded text-red-400 hover:bg-gray-800 hover:text-red-300"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  // USER IS NOT LOGGED IN - Show login/signup links
+                  <>
                     <Link href="/login" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
                       Log In
                     </Link>
                     <Link href="/signup" className="block px-3 py-2 rounded text-green-400 hover:bg-gray-800 hover:text-green-300">
                       Sign Up
                     </Link>
-                    
-                    {/* Show user-specific links when logged in */}
-                    {userLoggedIn && (
-                      <>
-                        <div className="my-2 border-t border-gray-800 pt-2"></div>
-                        <div className="px-3 py-1 text-xs text-gray-500">ACCOUNT</div>
-                        <Link href="/dashboard" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
-                          Dashboard
-                        </Link>
-                        <Link href="/profile" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
-                          Profile
-                        </Link>
-                        <Link href="/submit-wordle" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
-                          Submit Wordle
-                        </Link>
-                        <button
-                          onClick={handleSignOut}
-                          className="w-full text-left px-3 py-2 rounded text-red-400 hover:bg-gray-800 hover:text-red-300"
-                        >
-                          Sign Out
-                        </button>
-                      </>
-                    )}
                   </>
                 )}
               </div>

@@ -34,7 +34,7 @@ export default function SignUpPage() {
   if (status === 'authenticated' && session) {
     return (
       <PageLayout>
-        <AlreadyAuthenticated />
+        {/* <AlreadyAuthenticated /> */}
       </PageLayout>
     );
   }
