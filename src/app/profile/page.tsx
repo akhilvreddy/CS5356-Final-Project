@@ -29,11 +29,15 @@ export default async function ProfilePage() {
                 <h2 className="text-2xl font-semibold text-gray-200">
                   {session.user.name || 'User'}
                 </h2>
-                <p className="text-gray-400">Member since {new Date().toLocaleDateString()}</p>
+                <p className="text-gray-400">
+                  Member since {session.user.created_at 
+                    ? new Date(session.user.created_at).toLocaleDateString() 
+                    : 'Date unknown'}
+                </p>
                 
-                <button className="mt-3 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-sm text-gray-200 rounded-lg transition-colors">
+                {/* <button className="mt-3 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-sm text-gray-200 rounded-lg transition-colors">
                   Edit Profile
-                </button>
+                </button> */}
               </div>
             </div>
             
@@ -53,7 +57,7 @@ export default async function ProfilePage() {
                 </div>
               </div>
               
-              <div>
+              {/* <div>
                 <h3 className="text-sm uppercase tracking-wider text-gray-500 font-medium mb-2">Account Settings</h3>
                 <div className="bg-gray-800/60 rounded-lg p-4 space-y-4">
                   <div>
@@ -74,9 +78,9 @@ export default async function ProfilePage() {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
               
-              <div>
+              {/* <div>
                 <h3 className="text-sm uppercase tracking-wider text-gray-500 font-medium mb-2">Wordle Statistics</h3>
                 <div className="bg-gray-800/60 rounded-lg p-4">
                   <div className="grid grid-cols-4 gap-3 text-center">
@@ -98,7 +102,7 @@ export default async function ProfilePage() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

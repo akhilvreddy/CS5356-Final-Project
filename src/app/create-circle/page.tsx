@@ -15,6 +15,7 @@ export default function CreateCirclePage() {
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
   const [inviteCode, setInviteCode] = useState('');
+  const [isCopied, setIsCopied] = useState(false);
 
   // Handle auth status
   if (status === 'loading') {
@@ -76,6 +77,17 @@ export default function CreateCirclePage() {
     }
   };
 
+  const handleCopy = () => {
+    if (!inviteCode) return;
+    navigator.clipboard.writeText(inviteCode).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+    }).catch(err => {
+      console.error('Failed to copy invite code: ', err);
+      // Optionally show an error message to the user here
+    });
+  };
+
   return (
     <PageLayout>
       <div className="min-h-screen bg-black flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
@@ -117,11 +129,22 @@ export default function CreateCirclePage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="mb-6 p-4 bg-green-500/20 border border-green-500/30 rounded-lg text-center"
                 >
-                  <p className="text-green-200 text-sm mb-2">{formSuccess}</p>
-                  <p className="text-lg font-mono font-bold bg-gray-800/50 inline-block px-4 py-2 rounded text-green-300 tracking-widest">
-                    {inviteCode}
-                  </p>
-                  {/* TODO: Add a copy-to-clipboard button here */}
+                  <p className="text-green-200 text-sm mb-3">{formSuccess}</p>
+                  <div className="flex items-center justify-center space-x-3 bg-gray-800/50 px-4 py-2 rounded-lg">
+                    <p className="text-lg font-mono font-bold text-green-300 tracking-widest">
+                      {inviteCode}
+                    </p>
+                    <button
+                      onClick={handleCopy}
+                      className={`px-3 py-1 rounded transition-colors duration-200 text-xs 
+                                  ${isCopied 
+                                    ? 'bg-green-600 text-white cursor-default' 
+                                    : 'bg-gray-700 hover:bg-gray-600 text-gray-300'}`}
+                      disabled={isCopied}
+                    >
+                      {isCopied ? 'Copied!' : 'Copy'}
+                    </button>
+                  </div>
                 </motion.div>
               )}
 
@@ -131,43 +154,47 @@ export default function CreateCirclePage() {
                 </div>
               )}
 
-              <motion.form
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                onSubmit={handleSubmit}
-                className="space-y-6"
-              >
-                <div>
-                  <label htmlFor="circleName" className="block text-sm font-medium text-gray-300 mb-2">
-                    Circle Name:
-                  </label>
-                  <input
-                    id="circleName"
-                    name="circleName"
-                    type="text"
-                    required
-                    value={circleName}
-                    onChange={(e) => {
-                      setCircleName(e.target.value);
-                      if(formError) setFormError(''); // Clear error on change
-                      if(formSuccess) setFormSuccess(''); // Clear success on change
-                    }}
-                    className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                    placeholder="E.g., Family Wordlers, Office Champs"
-                  />
-                </div>
+              {/* Hide form if invite code is generated */}
+              {!inviteCode && (
+                <motion.form
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  onSubmit={handleSubmit}
+                  className="space-y-6"
+                >
+                  <div>
+                    <label htmlFor="circleName" className="block text-sm font-medium text-gray-300 mb-2">
+                      Circle Name:
+                    </label>
+                    <input
+                      id="circleName"
+                      name="circleName"
+                      type="text"
+                      required
+                      value={circleName}
+                      onChange={(e) => {
+                        setCircleName(e.target.value);
+                        if(formError) setFormError(''); 
+                        if(formSuccess) setFormSuccess(''); 
+                      }}
+                      className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                      placeholder="E.g., Family Wordlers, Office Champs"
+                      disabled={isSubmitting} // Disable input while submitting
+                    />
+                  </div>
 
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={`w-full bg-gradient-to-r from-indigo-600 to-blue-700 hover:from-indigo-500 hover:to-blue-600 text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-                  >
-                    {isSubmitting ? 'Creating...' : 'Create Circle'}
-                  </button>
-                </div>
-              </motion.form>
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className={`w-full bg-gradient-to-r from-indigo-600 to-blue-700 hover:from-indigo-500 hover:to-blue-600 text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 shadow-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {isSubmitting ? 'Creating...' : 'Create Circle'}
+                    </button>
+                  </div>
+                </motion.form>
+              )}
             </div>
           </motion.div>
         </div>

@@ -78,6 +78,7 @@ export const authOptions: AuthOptions = {
         token.name = user.name;
         token.email = user.email;
         token.phone = user.phone_number;
+        token.created_at = user.created_at;
         console.log('[JWT Callback] Token updated with user data:', token);
       }
       return token;
@@ -91,6 +92,7 @@ export const authOptions: AuthOptions = {
         session.user.name = token.name as string | null;
         session.user.email = token.email as string | null;
         session.user.phone = token.phone as string | null;
+        session.user.created_at = token.created_at as Date | string | null;
         console.log('[Session Callback] Session updated with token data:', session);
       }
       return session;

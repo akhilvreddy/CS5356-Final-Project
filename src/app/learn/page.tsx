@@ -178,7 +178,7 @@ export default function LearnPage() {
               transition={{ duration: 0.5, delay: 0.9 }}
               className="border-t border-gray-800 pt-12 mt-16"
             >
-              <h2 className="text-3xl font-bold text-center mb-8 text-gray-100">SMS Integration</h2>
+              <h2 className="text-3xl font-bold text-center mb-8 text-gray-100">SMS Integration - Coming Soon!</h2>
               <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-8">
                 <div className="flex flex-col md:flex-row items-center">
                   <div className="mb-6 md:mb-0 md:mr-8 flex-shrink-0">
