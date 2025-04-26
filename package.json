@@ -14,6 +14,7 @@
     "@auth/drizzle-adapter": "^1.9.0",
     "drizzle-orm": "^0.42.0",
     "framer-motion": "^12.8.0",
+    "nanoid": "^5.1.5",
     "next": "15.3.1",
     "next-auth": "^4.24.11",
     "pg": "^8.15.5",

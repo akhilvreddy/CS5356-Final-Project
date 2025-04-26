@@ -11,6 +11,14 @@ function hashPassword(password: string): string {
   return crypto.createHash('sha256').update(password).digest('hex');
 }
 
+// Helper function to verify password against the stored hash
+function verifyPassword(password: string, hash: string): boolean {
+  // Since registration uses simple SHA256 without salt, 
+  // verification is just re-hashing the input and comparing.
+  // NOTE: NOT RECOMMENDED FOR PRODUCTION - use bcrypt or Argon2 instead.
+  return crypto.createHash('sha256').update(password).digest('hex') === hash;
+}
+
 // Export auth options to use with getServerSession
 export const authOptions: AuthOptions = {
   adapter: DrizzleAdapter(db),
@@ -31,24 +39,21 @@ export const authOptions: AuthOptions = {
           const userResults = await db.select().from(users).where(eq(users.email, credentials.email));
           const user = userResults[0];
           
-          // No user found
-          if (!user) {
-            return null;
+          console.log('[Authorize] Found DB User:', user);
+          
+          // Check if user exists, has a password hash, and the password is correct
+          if (!user || !user.password_hash || !verifyPassword(credentials.password, user.password_hash)) {
+            console.log('[Authorize] Auth failed for:', credentials?.email);
+            return null; 
           }
           
-          // Check password
-          const hashedPassword = hashPassword(credentials.password);
-          
-          if (user.password_hash !== hashedPassword) {
-            return null;
-          }
-          
-          // Return user (without password hash)
+          // Return user object (excluding password hash)
           const { password_hash, ...userWithoutPassword } = user;
+          console.log('[Authorize] Returning User Object:', userWithoutPassword);
           return userWithoutPassword;
           
         } catch (error) {
-          console.error("Auth error:", error);
+          console.error("[Authorize] Auth error:", error);
           return null;
         }
       }
@@ -64,23 +69,29 @@ export const authOptions: AuthOptions = {
     error: "/login"
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account, profile, isNewUser }) {
+      console.log('[JWT Callback] User object:', user);
+      console.log('[JWT Callback] Initial Token:', token);
       // Add user data to token when first signing in
       if (user) {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
         token.phone = user.phone_number;
+        console.log('[JWT Callback] Token updated with user data:', token);
       }
       return token;
     },
     async session({ session, token }) {
+      console.log('[Session Callback] Received Token:', token);
+      console.log('[Session Callback] Initial Session:', session);
       // Add user data from token to session
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.name = token.name as string | null;
         session.user.email = token.email as string | null;
         session.user.phone = token.phone as string | null;
+        console.log('[Session Callback] Session updated with token data:', session);
       }
       return session;
     }

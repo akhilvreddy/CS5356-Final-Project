@@ -48,15 +48,29 @@ export default function SubmitWordlePage() {
       return;
     }
 
-    // Extract guesses from the first line (e.g., "Wordle 1093 4/6")
+    // Extract guesses from the first line (e.g., "Wordle 1093 4/6" or "Wordle 1093 X/6")
     const firstLine = lines[0];
-    const match = firstLine.match(/\b(\d+)\/6\b/);
+    // Updated regex to capture digits OR the letter X
+    const match = firstLine.match(/\b(\d+|X)\/6\b/);
+    
     if (match && match[1]) {
-      guesses = parseInt(match[1], 10);
+      const resultValue = match[1];
+      if (resultValue === 'X') {
+        guesses = 7; // Use 7 to represent a failed attempt (X/6)
+      } else {
+        guesses = parseInt(resultValue, 10);
+      }
     } else {
       setSubmitStatus('error');
-      setSubmitMessage('Invalid format: Could not find guess count (e.g., 4/6).');
+      setSubmitMessage('Invalid format: Could not find guess count (e.g., 4/6 or X/6).');
       return;
+    }
+
+    // Validate the parsed guess count (now includes 7 for 'X')
+    if (isNaN(guesses) || guesses < 1 || guesses > 7) {
+        setSubmitStatus('error');
+        setSubmitMessage('Invalid guess count detected.');
+        return;
     }
     
     // Extract the grid (skip the first line and any empty lines immediately after)
