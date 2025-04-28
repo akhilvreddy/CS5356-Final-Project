@@ -55,7 +55,7 @@ export default function LoginPage() {
   if (status === 'authenticated' && session) {
     return (
       <PageLayout>
-        {/* <AlreadyAuthenticated /> */}
+        <></>         {/* <AlreadyAuthenticated /> */}
       </PageLayout>
     );
   }
