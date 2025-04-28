@@ -16,13 +16,11 @@ export async function GET(request: NextRequest) {
                           cookies.has('__Secure-next-auth.session-token');
   
   // Prepare cookie info (without exposing values)
-  const cookieInfo = Array.from(cookies.entries()).map(([name, value]) => ({
-    name,
+  const cookieInfo = cookies.getAll().map(cookie => ({
+    name: cookie.name,
     exists: true,
-    // Don't include actual values in the response for security
-    secure: name.startsWith('__Secure-'),
-    httpOnly: true, // All NextAuth cookies are httpOnly
   }));
+  
   
   return NextResponse.json({
     authenticated: !!session,
