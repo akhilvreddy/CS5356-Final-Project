@@ -152,15 +152,15 @@ export default function LearnPage() {
                         </div>
                         <p className="text-gray-300 text-sm">Select "Submit Today's Wordle" from your dashboard</p>
                       </div>
-                      <div className="flex items-center mb-2 border-b border-gray-700 pb-2">
+                      {/* <div className="flex items-center mb-2 border-b border-gray-700 pb-2">
                         <div className="bg-gray-700 rounded-full w-8 h-8 flex items-center justify-center mr-3">
                           <span className="text-xs text-gray-300">2</span>
                         </div>
                         <p className="text-gray-300 text-sm">Choose the circle(s) you want to share with</p>
-                      </div>
+                      </div> */}
                       <div className="flex items-center">
                         <div className="bg-gray-700 rounded-full w-8 h-8 flex items-center justify-center mr-3">
-                          <span className="text-xs text-gray-300">3</span>
+                          <span className="text-xs text-gray-300">2</span>
                         </div>
                         <p className="text-gray-300 text-sm">Paste or input your Wordle results and hit "Share"</p>
                       </div>
