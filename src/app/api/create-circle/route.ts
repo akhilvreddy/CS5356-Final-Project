@@ -36,25 +36,23 @@ export async function POST(req: Request) {
 
     // 4. Database Interaction (Transaction)
     await db.transaction(async (tx) => {
-      // Insert the new circle
       const newCircleResult = await tx.insert(circles).values({
         name: name,
         code: code,
         creator_id: userId, 
-      }).returning({ id: circles.id, code: circles.code });
-
+      }).returning({ id: circles.id, code: circles.code }) as { id: string; code: string }[];
+    
       if (!newCircleResult || newCircleResult.length === 0) {
         throw new Error('Failed to create circle record.');
       }
       const newCircle = newCircleResult[0];
-
-      // Add the creator as the first member
+    
       await tx.insert(circle_members).values({
         user_id: userId,
         circle_id: newCircle.id, 
       });
-      
-      newCircleData = newCircle; // Store result to return outside transaction
+    
+      newCircleData = newCircle;
     });
 
     if (!newCircleData) {
