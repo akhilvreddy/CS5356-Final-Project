@@ -10,6 +10,7 @@ import PageLayout from '@/components/PageLayout';
 export default function SignUpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const force = searchParams.get('force');
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     name: '',
@@ -24,11 +25,10 @@ export default function SignUpPage() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    const force = searchParams.get('force');
     if (status === 'authenticated' && session && force === 'redirect') {
       router.push('/');
     }
-  }, [status, session, router]);
+  }, [status, session, force, router]);
 
   // If already authenticated, show the authenticated component
   if (status === 'authenticated' && session) {
