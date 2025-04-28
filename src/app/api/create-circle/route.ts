@@ -5,70 +5,71 @@ import { circles, circle_members } from '@/db/schema';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
-// Zod schema for input validation
+/* ----------  Schema ---------- */
 const createCircleSchema = z.object({
-  name: z.string().min(1, { message: 'Circle name cannot be empty' }).max(100, { message: 'Circle name too long' }),
+  name: z
+    .string()
+    .min(1, { message: 'Circle name cannot be empty' })
+    .max(100, { message: 'Circle name too long' }),
 });
 
+/* ----------  Route ---------- */
 export async function POST(req: Request) {
   try {
-    // 1. Get Authenticated User
+    /* 1. Auth */
     const session = await getSession();
     if (!session?.user?.id) {
       return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
     }
     const userId = session.user.id;
 
-    // 2. Parse and Validate Request Body
+    /* 2. Validate body */
     const body = await req.json();
-    const validationResult = createCircleSchema.safeParse(body);
-    if (!validationResult.success) {
-      return NextResponse.json({ message: 'Invalid input', errors: validationResult.error.flatten().fieldErrors }, { status: 400 });
+    const parsed = createCircleSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { message: 'Invalid input', errors: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
     }
-    const { name } = validationResult.data;
+    const { name } = parsed.data;
 
-    // 3. Generate Unique Invite Code
-    // TODO: Could add logic to ensure code is truly unique if collisions were a concern, 
-    // but nanoid (8 chars) makes collisions extremely unlikely.
-    const code = nanoid(8); // Generate an 8-character unique code
+    /* 3. Prepare data */
+    const code = nanoid(8); // unique invite code
 
-    let newCircleData: { id: string; code: string } | null = null;
+    /* 4. Create circle + add creator (single transaction) */
+    let newCircle!: { id: string; code: string }; // definite-assignment
 
-    // 4. Database Interaction (Transaction)
     await db.transaction(async (tx) => {
-      const newCircleResult = await tx.insert(circles).values({
-        name: name,
-        code: code,
-        creator_id: userId, 
-      }).returning({ id: circles.id, code: circles.code }) as { id: string; code: string }[];
-    
-      if (!newCircleResult || newCircleResult.length === 0) {
-        throw new Error('Failed to create circle record.');
-      }
-      const newCircle = newCircleResult[0];
-    
+      const res = await tx
+        .insert(circles)
+        .values({ name, code, creator_id: userId })
+        .returning({ id: circles.id, code: circles.code }) as { id: string; code: string }[];
+
+      if (!res.length) throw new Error('Failed to create circle record.');
+      newCircle = res[0];
+
       await tx.insert(circle_members).values({
         user_id: userId,
-        circle_id: newCircle.id, 
+        circle_id: newCircle.id,
       });
-    
-      newCircleData = newCircle;
     });
 
-    if (!newCircleData) {
-      throw new Error('Transaction failed to return circle data.');
-    }
-
-    // 5. Return Success Response
-    return NextResponse.json({
-      message: 'Circle created successfully!',
-      circleId: newCircleData.id,
-      inviteCode: newCircleData.code
-    }, { status: 201 });
+    /* 5. Respond */
+    return NextResponse.json(
+      {
+        message: 'Circle created successfully!',
+        circleId: newCircle.id,
+        inviteCode: newCircle.code,
+      },
+      { status: 201 }
+    );
 
   } catch (error) {
     console.error('Error creating circle:', error);
-    // TODO: Add more specific error handling (e.g., for potential code collisions if retries were added)
-    return NextResponse.json({ message: error instanceof Error ? error.message : 'An internal server error occurred.' }, { status: 500 });
+    return NextResponse.json(
+      { message: error instanceof Error ? error.message : 'Internal server error.' },
+      { status: 500 }
+    );
   }
-} 
+}
