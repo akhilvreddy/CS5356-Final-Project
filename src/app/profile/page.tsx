@@ -10,6 +10,11 @@ export default async function ProfilePage() {
   if (!session?.user) {
     redirect("/login?callbackUrl=/profile");
   }
+
+  const user = session.user as typeof session.user & {
+    created_at?: string | Date | null;
+    phone?: string | null;
+  };
   
   return (
     <PageLayout>
@@ -29,6 +34,7 @@ export default async function ProfilePage() {
                 <h2 className="text-2xl font-semibold text-gray-200">
                   {session.user.name || 'User'}
                 </h2>
+                
                 <p className="text-gray-400">
                   Member since {session.user.created_at 
                     ? new Date(session.user.created_at).toLocaleDateString() 
