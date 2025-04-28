@@ -7,6 +7,7 @@ import Link from 'next/link';
 export default function AuthDebugPage() {
   const { data: session, status, update } = useSession();
   const [clientTime, setClientTime] = useState(new Date().toISOString());
+  const [cookieDump, setCookieDump] = useState(''); 
   
   // Update time every second to show component is rerendering
   useEffect(() => {
@@ -17,6 +18,12 @@ export default function AuthDebugPage() {
     return () => clearInterval(timer);
   }, []);
   
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      setCookieDump(document.cookie.split(';').map(cookie => cookie.trim()).join('\n'));
+    }
+  }, []);
+
   // Force refresh the session
   const handleForceRefresh = async () => {
     await update();
@@ -70,7 +77,8 @@ export default function AuthDebugPage() {
         <div className="bg-black p-4 rounded mb-4">
           <h2 className="text-xl font-semibold mb-2 text-white">Cookies</h2>
           <pre className="font-mono text-xs overflow-auto p-2 bg-gray-950 rounded max-h-60">
-            {document.cookie.split(';').map(cookie => cookie.trim()).join('\n')}
+            {/* {document.cookie.split(';').map(cookie => cookie.trim()).join('\n')} */}
+            {cookieDump}
           </pre>
         </div>
         
