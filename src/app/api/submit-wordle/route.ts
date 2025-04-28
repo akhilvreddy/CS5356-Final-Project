@@ -25,8 +25,8 @@ export async function POST(req: Request) {
     }
 
     /* ---------- 3. Date helpers ---------- */
-    const today = new Date(); // e.g. 2025-04-28T…
-    const scoreDateStr = today.toISOString().split('T')[0]; // "2025-04-28"
+    const today = new Date();
+    const scoreDateStr = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
 
     /* ---------- 4. Uniqueness check ---------- */
     const existing = await db
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       .where(
         and(
           eq(wordle_scores.user_id, userId),
-          eq(wordle_scores.date, scoreDateStr)   // <- compare string to string
+          eq(wordle_scores.date, scoreDateStr)
         )
       )
       .limit(1);
@@ -52,10 +52,10 @@ export async function POST(req: Request) {
       .insert(wordle_scores)
       .values({
         user_id: userId,
-        date: scoreDateStr,        // <- store as string
+        date: scoreDateStr,
         guesses,
         raw_result: rawResult,
-        submittedAt: new Date(),   // timestamp column is fine as Date
+        submitted_at: new Date(),   // <-- snake-case column name
       })
       .returning({ id: wordle_scores.id }) as { id: string }[];
 
