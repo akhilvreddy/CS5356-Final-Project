@@ -93,12 +93,16 @@ export const authOptions: AuthOptions = {
       console.log('[Session Callback] Initial Session:', session);
       // Add user data from token to session
       if (token && session.user) {
-        session.user.id = token.id as string;
-        session.user.name = token.name as string | null;
-        session.user.email = token.email as string | null;
-        session.user.phone = token.phone as string | null;
-        session.user.created_at = token.created_at as Date | string | null;
-        console.log('[Session Callback] Session updated with token data:', session);
+        const su = session.user as typeof session.user & {
+            phone?: string | null;
+            created_at?: string | Date | null;
+        };
+
+        su.id = token.id as string;
+        su.name = token.name as string | null;
+        su.email = token.email as string | null;
+        su.phone = token.phone as string | null;
+        su.created_at = token.created_at as string | Date | null;
       }
       return session;
     }
