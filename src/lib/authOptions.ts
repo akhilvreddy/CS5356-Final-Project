@@ -74,11 +74,16 @@ export const authOptions: AuthOptions = {
       console.log('[JWT Callback] Initial Token:', token);
       // Add user data to token when first signing in
       if (user) {
-        token.id = user.id;
-        token.name = user.name;
-        token.email = user.email;
-        token.phone = user.phone_number;
-        token.created_at = user.created_at;
+
+        const u = user as typeof user & {
+            phone_number?: string | null;
+            created_at?: string | Date | null;
+        };
+        token.id = u.id;
+        token.name = u.name;
+        token.email = u.email;
+        token.phone = u.phone_number;
+        token.created_at = u.created_at;
         console.log('[JWT Callback] Token updated with user data:', token);
       }
       return token;
