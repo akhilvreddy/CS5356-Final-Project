@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import PageLayout from '@/components/PageLayout';
 
 export default function SignUpPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [formData, setFormData] = useState({
     name: '',
@@ -23,9 +24,8 @@ export default function SignUpPage() {
 
   // Redirect if already authenticated
   useEffect(() => {
-    // Remove automatic redirect - we'll show AlreadyAuthenticated component instead
-    // but still allow accessing the page
-    if (status === 'authenticated' && session && router.query?.force === 'redirect') {
+    const force = searchParams.get('force');
+    if (status === 'authenticated' && session && force === 'redirect') {
       router.push('/');
     }
   }, [status, session, router]);
