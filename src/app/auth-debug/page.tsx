@@ -9,7 +9,6 @@ export default function AuthDebugPage() {
   const [clientTime, setClientTime] = useState(new Date().toISOString());
   const [cookieDump, setCookieDump] = useState(''); 
   
-  // Update time every second to show component is rerendering
   useEffect(() => {
     const timer = setInterval(() => {
       setClientTime(new Date().toISOString());
@@ -24,21 +23,17 @@ export default function AuthDebugPage() {
     }
   }, []);
 
-  // Force refresh the session
   const handleForceRefresh = async () => {
     await update();
     alert('Session manually refreshed!');
   };
   
-  // Clear all cookies and reload page
   const handleClearCookies = () => {
     if (confirm('This will clear all cookies and reload the page. Continue?')) {
-      // Set all cookies to expire immediately
       document.cookie.split(';').forEach(cookie => {
         const [name] = cookie.trim().split('=');
         document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/`;
       });
-      // Reload page
       window.location.reload();
     }
   };
@@ -77,7 +72,6 @@ export default function AuthDebugPage() {
         <div className="bg-black p-4 rounded mb-4">
           <h2 className="text-xl font-semibold mb-2 text-white">Cookies</h2>
           <pre className="font-mono text-xs overflow-auto p-2 bg-gray-950 rounded max-h-60">
-            {/* {document.cookie.split(';').map(cookie => cookie.trim()).join('\n')} */}
             {cookieDump}
           </pre>
         </div>

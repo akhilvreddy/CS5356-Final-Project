@@ -8,7 +8,6 @@ import LoadingAnimation from '@/components/LoadingAnimation';
 export default function Home() {
   const [loading, setLoading] = useState(true);
 
-  // Function to handle the completion of the loading animation
   const handleLoadingComplete = () => {
     setLoading(false);
   };
@@ -18,7 +17,6 @@ export default function Home() {
       {loading && <LoadingAnimation onComplete={handleLoadingComplete} />}
       
       <div className="min-h-screen flex flex-col items-center justify-center bg-black">
-        {/* Top navigation */}
         {!loading && (
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
@@ -59,7 +57,6 @@ export default function Home() {
           </motion.div>
         )}
         
-        {/* Main content - Wordle Circles title */}
         {!loading && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -94,7 +91,6 @@ export default function Home() {
           </motion.div>
         )}
         
-        {/* GitHub Logo Link */}
         {!loading && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -127,7 +123,6 @@ export default function Home() {
           </motion.div>
         )}
         
-        {/* Floating circles in the background */}
         {!loading && (
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(8)].map((_, i) => (

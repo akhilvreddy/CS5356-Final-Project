@@ -7,11 +7,9 @@ import { motion } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 
-// Define a type for the circle data we expect
 interface Circle {
   id: string;
   name: string;
-  // Add other fields if needed later, like inviteCode
 }
 
 export default function ViewCirclesPage() {
@@ -20,50 +18,35 @@ export default function ViewCirclesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Authentication Check
   useEffect(() => {
     if (status === 'unauthenticated') {
       redirect('/login?callbackUrl=/view-circles');
     }
   }, [status]);
 
-  // Data Fetching
   useEffect(() => {
     if (status === 'authenticated') {
       setIsLoading(true);
       setError(null);
       
-      // Fetch circles from the API endpoint
       const fetchCircles = async () => {
         try {
-          // Fetch data from the new API route
           const response = await fetch('/api/my-circles');
           if (!response.ok) {
-            // Attempt to read error message from response body
             let errorMsg = 'Failed to fetch circles';
             try {
               const errorData = await response.json();
               errorMsg = errorData.message || errorMsg;
             } catch (jsonError) {
-              // Ignore if response is not JSON
             }
             throw new Error(errorMsg);
           }
           const data = await response.json();
-          setCircles(data.circles || []); // Set state with fetched data
-
-          // --- REMOVED MOCK DATA --- 
-          // await new Promise(resolve => setTimeout(resolve, 1000)); 
-          // setCircles([
-          //   { id: '1', name: 'Family Wordlers' },
-          //   { id: '2', name: 'Office Champs' },
-          //   { id: '3', name: 'Weekend Warriors' },
-          // ]);
-          // --- END MOCK DATA ---
+          setCircles(data.circles || []);
 
         } catch (err) {
           setError(err instanceof Error ? err.message : 'An unknown error occurred');
-          setCircles([]); // Clear circles on error
+          setCircles([]);
         } finally {
           setIsLoading(false);
         }
@@ -71,9 +54,8 @@ export default function ViewCirclesPage() {
 
       fetchCircles();
     }
-  }, [status]); // Re-run if auth status changes
+  }, [status]);
 
-  // Render Loading State
   if (status === 'loading' || (status === 'authenticated' && isLoading)) {
     return (
       <PageLayout>
@@ -85,7 +67,6 @@ export default function ViewCirclesPage() {
     );
   }
 
-  // Render Content
   return (
     <PageLayout>
       <div className="min-h-screen bg-black pt-24 px-4 sm:px-6 lg:px-8 pb-20">
@@ -99,14 +80,12 @@ export default function ViewCirclesPage() {
             Your Wordle Circles
           </motion.h1>
 
-          {/* Error Display */}
           {error && (
             <div className="mb-6 p-4 bg-red-900/50 border border-red-700 rounded-lg text-red-300 text-center">
               Error: {error}
             </div>
           )}
 
-          {/* Circles Grid */}
           {!isLoading && !error && (
             <motion.div 
               initial={{ opacity: 0 }}
@@ -122,16 +101,14 @@ export default function ViewCirclesPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                   >
-                    {/* Make each box a link to a potential circle detail page */}
                     <Link 
-                      href={`/circles/${circle.id}`} // Example link structure
+                      href={`/circles/${circle.id}`}
                       className="block p-6 bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-2xl shadow-lg 
                                  hover:border-purple-600 hover:bg-gray-800/80 transition-all duration-300 group"
                     >
                       <h2 className="text-xl font-semibold text-gray-200 mb-2 truncate group-hover:text-purple-400 transition-colors">
                         {circle.name}
                       </h2>
-                      {/* Add more details later if needed */}
                       <p className="text-sm text-gray-500 group-hover:text-gray-400 transition-colors">
                         View Circle
                       </p>
@@ -139,7 +116,6 @@ export default function ViewCirclesPage() {
                   </motion.div>
                 ))
               ) : (
-                // Message if user has no circles
                 <div className="col-span-full text-center py-10 px-6 bg-gray-900/70 border border-gray-800 rounded-2xl">
                   <p className="text-gray-400 mb-4">You haven't joined any circles yet.</p>
                   <div className="flex justify-center gap-4">

@@ -4,12 +4,7 @@ import { db } from "@/db";
 import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-/**
- * Protected API route to get the current user's profile
- * Only accessible to authenticated users
- */
 export async function GET() {
-  // Check if user is authenticated
   const session = await getSession();
   
   if (!session?.user) {
@@ -20,7 +15,6 @@ export async function GET() {
   }
   
   try {
-    // Get user from database (excluding password hash)
     const userId = session.user.id;
     const userResults = await db
       .select({

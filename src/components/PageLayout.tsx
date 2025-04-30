@@ -13,21 +13,17 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
   const router = useRouter();
   const pathname = usePathname();
   
-  // Close mobile menu when page changes
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [children]);
   
-  // Handle session timeout and protected routes
   useEffect(() => {
-    // Check if we're on a protected route and user is not authenticated
     const isProtectedRoute = ['/dashboard', '/profile', '/submit-wordle'].includes(pathname);
     if (isProtectedRoute && status === 'unauthenticated') {
       router.push(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
     }
   }, [status, pathname, router]);
   
-  // Log session info in development only
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log("Session status:", status);
@@ -36,23 +32,18 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
   }, [session, status]);
   
   const handleSignOut = async () => {
-    // Clear any local storage or other state if needed
     localStorage.removeItem('userPreferences');
     sessionStorage.clear();
     
-    // Sign out and redirect to home
     await signOut({ callbackUrl: '/' });
   };
   
-  // Force explicit check on authentication status
   const userLoggedIn = status === 'authenticated' && session !== null;
   
-  // Check if on auth pages (login/signup)
   const isAuthPage = ['/login', '/signup'].includes(pathname);
   
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Navigation bar */}
       <nav className="fixed top-0 left-0 right-0 bg-black/70 backdrop-blur-md z-20 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
@@ -62,13 +53,10 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
               </span>
             </Link>
             
-            {/* Desktop navigation */}
             <div className="hidden md:flex space-x-4 items-center">
               {status === 'loading' ? (
-                // Show loading skeleton
                 <div className="h-9 w-24 bg-gray-800/50 animate-pulse rounded-full"></div>
               ) : userLoggedIn ? (
-                // USER IS LOGGED IN - Only show user menu
                 <div className="relative">
                   <button
                     onClick={() => setShowMenu(!showMenu)}
@@ -111,7 +99,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
                   </AnimatePresence>
                 </div>
               ) : (
-                // USER IS NOT LOGGED IN - Show login/signup buttons
                 <>
                   <Link href="/signup" className="nav-btn">
                     Sign Up
@@ -123,7 +110,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
               )}
             </div>
             
-            {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -147,7 +133,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
           </div>
         </div>
         
-        {/* Mobile menu */}
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div 
@@ -161,7 +146,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
                 {status === 'loading' ? (
                   <div className="h-10 mx-3 bg-gray-800/50 animate-pulse rounded"></div>
                 ) : userLoggedIn ? (
-                  // USER IS LOGGED IN - Show user links
                   <>
                     <div className="px-3 py-1 text-xs text-gray-500">ACCOUNT</div>
                     <Link href="/dashboard" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
@@ -181,7 +165,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
                     </button>
                   </>
                 ) : (
-                  // USER IS NOT LOGGED IN - Show login/signup links
                   <>
                     <Link href="/login" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
                       Log In
@@ -197,7 +180,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
         </AnimatePresence>
       </nav>
       
-      {/* Click outside to close desktop menu */}
       {showMenu && (
         <div 
           className="fixed inset-0 z-10"
@@ -205,7 +187,6 @@ export default function PageLayout({ children }: { children: React.ReactNode }) 
         />
       )}
       
-      {/* Main content with padding for fixed nav */}
       <main className="pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {children}

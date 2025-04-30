@@ -17,7 +17,6 @@ export default function CreateCirclePage() {
   const [inviteCode, setInviteCode] = useState('');
   const [isCopied, setIsCopied] = useState(false);
 
-  // Handle auth status
   if (status === 'loading') {
     return (
       <PageLayout>
@@ -60,15 +59,9 @@ export default function CreateCirclePage() {
         throw new Error(data.message || 'Failed to create circle.');
       }
       
-      // Store the invite code and set success message
       setInviteCode(data.inviteCode || ''); 
       setFormSuccess(`Circle '${circleName}' created successfully! Share the code below:`);
-      setCircleName(''); // Clear input
-      
-      // REMOVED automatic redirect to show the code
-      // setTimeout(() => {
-      //   router.push('/dashboard'); 
-      // }, 2000);
+      setCircleName('');
 
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'An unexpected error occurred.');
@@ -81,10 +74,9 @@ export default function CreateCirclePage() {
     if (!inviteCode) return;
     navigator.clipboard.writeText(inviteCode).then(() => {
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+      setTimeout(() => setIsCopied(false), 2000);
     }).catch(err => {
       console.error('Failed to copy invite code: ', err);
-      // Optionally show an error message to the user here
     });
   };
 
@@ -98,10 +90,8 @@ export default function CreateCirclePage() {
             transition={{ duration: 0.5 }}
             className="relative"
           >
-            {/* Background glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-blue-500/10 rounded-3xl blur-3xl -z-10"></div>
             
-            {/* Card content */}
             <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-2xl p-8 shadow-xl">
               <div className="text-center mb-8">
                 <motion.h2
@@ -122,7 +112,6 @@ export default function CreateCirclePage() {
                 </motion.p>
               </div>
 
-              {/* Show Success Message and Invite Code */}
               {formSuccess && inviteCode && (
                 <motion.div 
                   initial={{ opacity: 0, y: -10 }}
@@ -154,7 +143,6 @@ export default function CreateCirclePage() {
                 </div>
               )}
 
-              {/* Hide form if invite code is generated */}
               {!inviteCode && (
                 <motion.form
                   initial={{ opacity: 0 }}
@@ -180,7 +168,7 @@ export default function CreateCirclePage() {
                       }}
                       className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                       placeholder="E.g., Family Wordlers, Office Champs"
-                      disabled={isSubmitting} // Disable input while submitting
+                      disabled={isSubmitting}
                     />
                   </div>
 

@@ -4,15 +4,12 @@ import PageLayout from "@/components/PageLayout";
 import Link from "next/link";
 
 export default async function DashboardPage() {
-  // Check if user is authenticated (server-side)
   const session = await getSession();
   
-  // Redirect to login if not authenticated
   if (!session?.user) {
     redirect("/login?callbackUrl=/dashboard");
   }
 
-  // Get user's first name
   const firstName = session.user.name?.split(' ')[0] || 'there';
   
   return (
@@ -63,17 +60,16 @@ export default async function DashboardPage() {
             </div>
           </div>
           
-          {/* Minimalist 'Your Circles' section */}
-          <div className="mt-10 mb-10"> {/* Add some margin top/bottom */}
+          <div className="mt-10 mb-10">
 
-            <div className="flex items-center justify-center"> {/* Center button */}
+            <div className="flex items-center justify-center">
               <Link
                 href="/view-circles"
                 className="w-64 h-64 rounded-full bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 
-                           flex items-center justify-center 
-                           text-white font-semibold text-lg 
-                           hover:scale-105 hover:shadow-2xl transition-all duration-300 
-                           focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-gray-800"
+                          flex items-center justify-center 
+                          text-white font-semibold text-lg 
+                          hover:scale-105 hover:shadow-2xl transition-all duration-300 
+                          focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2 focus:ring-offset-gray-800"
               >
                 View Wordle Circles
               </Link>

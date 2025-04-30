@@ -6,20 +6,14 @@ import { users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 
-// Helper function to hash password - must match the one used in register route
 function hashPassword(password: string): string {
   return crypto.createHash('sha256').update(password).digest('hex');
 }
 
-// Helper function to verify password against the stored hash
 function verifyPassword(password: string, hash: string): boolean {
-  // Since registration uses simple SHA256 without salt, 
-  // verification is just re-hashing the input and comparing.
-  // NOTE: NOT RECOMMENDED FOR PRODUCTION - use bcrypt or Argon2 instead.
   return crypto.createHash('sha256').update(password).digest('hex') === hash;
 }
 
-// Export auth options to use with getServerSession
 export const authOptions: AuthOptions = {
   adapter: DrizzleAdapter(db),
   providers: [
@@ -35,19 +29,16 @@ export const authOptions: AuthOptions = {
         }
 
         try {
-          // Find user by email
           const userResults = await db.select().from(users).where(eq(users.email, credentials.email));
           const user = userResults[0];
           
           console.log('[Authorize] Found DB User:', user);
           
-          // Check if user exists, has a password hash, and the password is correct
           if (!user || !user.password_hash || !verifyPassword(credentials.password, user.password_hash)) {
             console.log('[Authorize] Auth failed for:', credentials?.email);
             return null; 
           }
           
-          // Return user object (excluding password hash)
           const { password_hash, ...userWithoutPassword } = user;
           console.log('[Authorize] Returning User Object:', userWithoutPassword);
           return userWithoutPassword;
@@ -72,7 +63,6 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user, account, profile, isNewUser }) {
       console.log('[JWT Callback] User object:', user);
       console.log('[JWT Callback] Initial Token:', token);
-      // Add user data to token when first signing in
       if (user) {
 
         const u = user as typeof user & {
@@ -91,7 +81,7 @@ export const authOptions: AuthOptions = {
     async session({ session, token }) {
       console.log('[Session Callback] Received Token:', token);
       console.log('[Session Callback] Initial Session:', session);
-      // Add user data from token to session
+      
       if (token && session.user) {
         const su = session.user as typeof session.user & {
             phone?: string | null;
@@ -108,8 +98,3 @@ export const authOptions: AuthOptions = {
     }
   }
 };
-
-// // Auth handler
-// const handler = NextAuth(authOptions);
-
-// export { handler as GET, handler as POST }; 

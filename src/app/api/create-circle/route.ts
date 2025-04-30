@@ -5,7 +5,6 @@ import { circles, circle_members } from '@/db/schema';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
-/* ----------  Schema ---------- */
 const createCircleSchema = z.object({
   name: z
     .string()
@@ -13,17 +12,14 @@ const createCircleSchema = z.object({
     .max(100, { message: 'Circle name too long' }),
 });
 
-/* ----------  Route ---------- */
 export async function POST(req: Request) {
   try {
-    /* 1. Auth */
     const session = await getSession();
     if (!session?.user?.id) {
       return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
     }
     const userId = session.user.id;
 
-    /* 2. Validate body */
     const body = await req.json();
     const parsed = createCircleSchema.safeParse(body);
     if (!parsed.success) {
@@ -34,11 +30,9 @@ export async function POST(req: Request) {
     }
     const { name } = parsed.data;
 
-    /* 3. Prepare data */
-    const code = nanoid(8); // unique invite code
+    const code = nanoid(8);
 
-    /* 4. Create circle + add creator (single transaction) */
-    let newCircle!: { id: string; code: string }; // definite-assignment
+    let newCircle!: { id: string; code: string };
 
     await db.transaction(async (tx) => {
       const res = await tx
@@ -55,7 +49,6 @@ export async function POST(req: Request) {
       });
     });
 
-    /* 5. Respond */
     return NextResponse.json(
       {
         message: 'Circle created successfully!',

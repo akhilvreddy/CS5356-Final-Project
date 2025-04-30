@@ -6,14 +6,12 @@ import { eq, and } from 'drizzle-orm';
 
 export async function POST(req: Request) {
   try {
-    /* ---------- 1. Auth ---------- */
     const session = await getSession();
     if (!session?.user?.id) {
       return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
     }
     const userId = session.user.id;
 
-    /* ---------- 2. Body ---------- */
     const body = await req.json();
     const { guesses, rawResult } = body;
 
@@ -24,11 +22,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: 'Invalid raw result.' }, { status: 400 });
     }
 
-    /* ---------- 3. Date helpers ---------- */
     const today = new Date();
-    const scoreDateStr = today.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    const scoreDateStr = today.toISOString().split('T')[0];
 
-    /* ---------- 4. Uniqueness check ---------- */
     const existing = await db
       .select({ id: wordle_scores.id })
       .from(wordle_scores)
@@ -47,7 +43,6 @@ export async function POST(req: Request) {
       );
     }
 
-    /* ---------- 5. Insert ---------- */
     const [inserted] = await db
       .insert(wordle_scores)
       .values({
@@ -55,11 +50,10 @@ export async function POST(req: Request) {
         date: scoreDateStr,
         guesses,
         raw_result: rawResult,
-        submitted_at: new Date(),   // <-- snake-case column name
+        submitted_at: new Date(),
       })
       .returning({ id: wordle_scores.id }) as { id: string }[];
 
-    /* ---------- 6. Response ---------- */
     return NextResponse.json(
       {
         message: 'Wordle result submitted successfully!',

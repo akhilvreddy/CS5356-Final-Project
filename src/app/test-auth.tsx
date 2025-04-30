@@ -25,7 +25,6 @@ export default function TestAuth() {
       
       setResult(response);
       
-      // Check for cookies
       if (document.cookie) {
         setCookies(document.cookie);
       }

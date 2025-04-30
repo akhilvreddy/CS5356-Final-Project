@@ -11,7 +11,6 @@ export default function GamePage() {
   const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
-    // Simulate loading data
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -43,7 +42,6 @@ export default function GamePage() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            {/* Auth status banner */}
             {status !== 'loading' && (
               <motion.div 
                 initial={{ opacity: 0, y: -10 }}

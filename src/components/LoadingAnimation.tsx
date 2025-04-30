@@ -27,7 +27,6 @@ export default function LoadingAnimation({ onComplete }: { onComplete: () => voi
     };
   }, [onComplete]);
 
-  // Wordle green color for all letters
   const wordleGreen = "#6aaa64";
   const wordleLetters = ["W", "O", "R", "D", "L", "E"];
   

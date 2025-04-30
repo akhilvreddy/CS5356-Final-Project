@@ -20,14 +20,12 @@ export default function SignupClient() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError,  setSubmitError]  = useState('');
 
-  /* ----------------------- effects ------------------------ */
   useEffect(() => {
     if (status === 'authenticated' && session && force === 'redirect') {
       router.push('/');
     }
   }, [status, session, force, router]);
 
-  /* ---------------- early auth states -------------------- */
   if (status === 'authenticated' && session) return <></>;
   if (status === 'loading') {
     return (
@@ -38,7 +36,6 @@ export default function SignupClient() {
     );
   }
 
-  /* ------------------ helpers ----------------------------- */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(p => ({ ...p, [name]: value }));
@@ -87,7 +84,6 @@ export default function SignupClient() {
     }
   };
 
-  /* ----------------------- JSX ---------------------------- */
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
       <div className="w-full max-w-md">
@@ -97,12 +93,10 @@ export default function SignupClient() {
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          {/* glow background */}
+
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur-3xl -z-10" />
 
-          {/* card */}
           <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-2xl p-8 shadow-xl">
-            {/* heading */}
             <div className="text-center mb-8">
               <motion.h2
                 initial={{ opacity: 0 }}
@@ -128,7 +122,6 @@ export default function SignupClient() {
               </div>
             )}
 
-            {/* form */}
             <motion.form
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -136,7 +129,7 @@ export default function SignupClient() {
               onSubmit={handleSubmit}
               className="space-y-5"
             >
-              {/* name */}
+
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-1">
                   Full Name
@@ -152,7 +145,6 @@ export default function SignupClient() {
                 {errors.name && <p className="mt-1 text-sm text-red-400">{errors.name}</p>}
               </div>
 
-              {/* email */}
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
                   Email Address
@@ -168,7 +160,6 @@ export default function SignupClient() {
                 {errors.email && <p className="mt-1 text-sm text-red-400">{errors.email}</p>}
               </div>
 
-              {/* phone */}
               <div>
                 <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-1">
                   Phone Number
@@ -184,7 +175,6 @@ export default function SignupClient() {
                 {errors.phone && <p className="mt-1 text-sm text-red-400">{errors.phone}</p>}
               </div>
 
-              {/* password */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
                   Password
@@ -200,7 +190,6 @@ export default function SignupClient() {
                 {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password}</p>}
               </div>
 
-              {/* confirm password */}
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-1">
                   Confirm Password
@@ -219,7 +208,6 @@ export default function SignupClient() {
                 )}
               </div>
 
-              {/* submit */}
               <div className="pt-2">
                 <button
                   type="submit" disabled={isSubmitting}
@@ -232,7 +220,6 @@ export default function SignupClient() {
               </div>
             </motion.form>
 
-            {/* footer */}
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.6 }}
@@ -248,7 +235,6 @@ export default function SignupClient() {
           </div>
         </motion.div>
 
-        {/* decorative blobs */}
         <motion.div
           className="absolute top-20 left-10 w-20 h-20 rounded-full bg-blue-500/10 blur-3xl"
           animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}

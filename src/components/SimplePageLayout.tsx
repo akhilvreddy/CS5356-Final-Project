@@ -15,7 +15,6 @@ export default function SimplePageLayout({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Close mobile menu when switching pages
   useEffect(() => {
     setIsMenuOpen(false);
   }, [children]);
@@ -23,18 +22,15 @@ export default function SimplePageLayout({
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   
   const handleSignOut = () => {
-    // Clear any local storage or other state if needed
     localStorage.removeItem('userPreferences');
     sessionStorage.clear();
     
     signOut({ callbackUrl: '/' });
   };
   
-  // Check if on auth pages (login/signup)
   const isAuthPage = ['/login', '/signup'].includes(pathname);
   const userLoggedIn = status === 'authenticated' && session !== null;
   
-  // On auth pages when already logged in, render minimal layout
   if (isAuthPage && userLoggedIn) {
     return (
       <div className="flex flex-col min-h-screen bg-black text-white">
@@ -49,7 +45,6 @@ export default function SimplePageLayout({
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-white">
-      {/* Navigation */}
       <nav className="sticky top-0 z-10 bg-black/80 backdrop-blur-sm border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -59,13 +54,11 @@ export default function SimplePageLayout({
               </Link>
             </div>
 
-            {/* Desktop menu */}
             <div className="hidden md:flex items-center space-x-6">
               {status === 'loading' ? (
                 <div className="h-4 w-24 bg-gray-800 animate-pulse rounded"></div>
               ) : (
                 <>
-                  {/* Always show login/signup links regardless of auth status */}
                   <Link 
                     href="/login" 
                     className="px-4 py-2 rounded bg-gray-800 hover:bg-gray-700 transition"
@@ -79,7 +72,6 @@ export default function SimplePageLayout({
                     Sign Up
                   </Link>
                   
-                  {/* Show additional links when logged in */}
                   {session && (
                     <>
                       <div className="h-6 border-l border-gray-700 mx-2"></div>
@@ -101,7 +93,6 @@ export default function SimplePageLayout({
               )}
             </div>
             
-            {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
               <button
                 onClick={toggleMenu}
@@ -125,7 +116,6 @@ export default function SimplePageLayout({
           </div>
         </div>
 
-        {/* Mobile menu */}
         {isMenuOpen && (
           <motion.div 
             className="md:hidden"
@@ -139,7 +129,6 @@ export default function SimplePageLayout({
                 <div className="h-10 bg-gray-800 animate-pulse rounded mx-3"></div>
               ) : (
                 <>
-                  {/* Always show login/signup links */}
                   <Link href="/login" className="block px-3 py-2 rounded text-gray-300 hover:bg-gray-800 hover:text-white">
                     Login
                   </Link>
@@ -147,7 +136,6 @@ export default function SimplePageLayout({
                     Sign Up
                   </Link>
                   
-                  {/* Show additional options when logged in */}
                   {session && (
                     <>
                       <div className="my-2 border-t border-gray-800 pt-2"></div>
@@ -173,14 +161,12 @@ export default function SimplePageLayout({
         )}
       </nav>
 
-      {/* Main content */}
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {children}
         </div>
       </main>
 
-      {/* Footer with auth debug info - only in development */}
       {process.env.NODE_ENV === 'development' && (
         <footer className="bg-gray-900 text-gray-400 text-xs p-2">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

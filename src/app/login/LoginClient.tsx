@@ -7,7 +7,6 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 
 export default function LoginClient() {
-  /* -------- hooks & state -------- */
   const router = useRouter();
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
@@ -24,7 +23,6 @@ export default function LoginClient() {
     rememberMe: false,
   });
 
-  /* -------- effects -------- */
   useEffect(() => {
     if (status === 'authenticated' && session && searchParams.get('force') === 'redirect') {
       router.push('/dashboard');
@@ -44,7 +42,6 @@ export default function LoginClient() {
     }
   }, [justRegistered, authError]);
 
-  /* -------- handlers -------- */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
@@ -76,9 +73,8 @@ export default function LoginClient() {
     }
   };
 
-  /* -------- early returns for auth states -------- */
   if (status === 'authenticated' && session) {
-    return <></>;            /* AlreadyAuthenticated placeholder */
+    return <></>;
   }
   if (status === 'loading') {
     return (
@@ -89,22 +85,18 @@ export default function LoginClient() {
     );
   }
 
-  /* -------- JSX (was inside <PageLayout> before) -------- */
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 sm:px-6 lg:px-8 py-20">
       <div className="w-full max-w-md">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }} className="relative">
-          {/* glow */}
           <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur-3xl -z-10" />
 
-          {/* card */}
           <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-2xl p-8 shadow-xl">
-            {/* header */}
             <div className="text-center mb-8">
               <motion.h2 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                         transition={{ duration: 0.5, delay: 0.2 }}
-                         className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300">
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300">
                 Welcome Back
               </motion.h2>
               <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
@@ -129,11 +121,9 @@ export default function LoginClient() {
               </div>
             )}
 
-            {/* form */}
             <motion.form initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                         transition={{ duration: 0.5, delay: 0.4 }}
-                         onSubmit={handleSubmit} className="space-y-5">
-              {/* email */}
+                        transition={{ duration: 0.5, delay: 0.4 }}
+                        onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">
                   Email Address
@@ -143,7 +133,6 @@ export default function LoginClient() {
                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500" />
               </div>
 
-              {/* password */}
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label htmlFor="password" className="block text-sm font-medium text-gray-300">
@@ -156,7 +145,6 @@ export default function LoginClient() {
                        className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500" />
               </div>
 
-              {/* submit */}
               <div className="pt-4">
                 <button type="submit" disabled={isSubmitting}
                         className={`w-full bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 shadow-lg ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}>
@@ -165,7 +153,6 @@ export default function LoginClient() {
               </div>
             </motion.form>
 
-            {/* footer */}
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: 0.6 }} className="mt-6 text-center">
               <p className="text-gray-400 text-sm">
@@ -178,7 +165,6 @@ export default function LoginClient() {
           </div>
         </motion.div>
 
-        {/* decorative blobs (unchanged) */}
         <motion.div className="absolute top-20 right-10 w-20 h-20 rounded-full bg-purple-500/10 blur-3xl"
                     animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
                     transition={{ duration: 5, repeat: Infinity, repeatType: 'reverse' }} />

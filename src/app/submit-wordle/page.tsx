@@ -10,10 +10,9 @@ export default function SubmitWordlePage() {
   const { data: session, status } = useSession();
   const [wordleResult, setWordleResult] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(''); // 'success' or 'error'
+  const [submitStatus, setSubmitStatus] = useState('');
   const [submitMessage, setSubmitMessage] = useState('');
 
-  // Redirect if loading or not authenticated
   if (status === 'loading') {
     return (
       <PageLayout>
@@ -37,7 +36,6 @@ export default function SubmitWordlePage() {
       return;
     }
     
-    // --- Parsing Logic --- 
     const lines = wordleResult.trim().split('\n');
     let guesses = NaN;
     let rawResultGrid = '';
@@ -48,15 +46,13 @@ export default function SubmitWordlePage() {
       return;
     }
 
-    // Extract guesses from the first line (e.g., "Wordle 1093 4/6" or "Wordle 1093 X/6")
     const firstLine = lines[0];
-    // Updated regex to capture digits OR the letter X
     const match = firstLine.match(/\b(\d+|X)\/6\b/);
     
     if (match && match[1]) {
       const resultValue = match[1];
       if (resultValue === 'X') {
-        guesses = 7; // Use 7 to represent a failed attempt (X/6)
+        guesses = 7;
       } else {
         guesses = parseInt(resultValue, 10);
       }
@@ -66,14 +62,12 @@ export default function SubmitWordlePage() {
       return;
     }
 
-    // Validate the parsed guess count (now includes 7 for 'X')
     if (isNaN(guesses) || guesses < 1 || guesses > 7) {
         setSubmitStatus('error');
         setSubmitMessage('Invalid guess count detected.');
         return;
     }
     
-    // Extract the grid (skip the first line and any empty lines immediately after)
     let gridStartIndex = 1;
     while (gridStartIndex < lines.length && lines[gridStartIndex].trim() === '') {
       gridStartIndex++;
@@ -85,14 +79,12 @@ export default function SubmitWordlePage() {
         setSubmitMessage('Invalid format: Result grid is empty.');
         return;
     }
-    // --- End Parsing Logic ---
 
     setIsSubmitting(true);
     setSubmitStatus('');
     setSubmitMessage('');
 
     try {
-      // --- API Call --- 
       const response = await fetch('/api/submit-wordle', {
         method: 'POST',
         headers: {
@@ -101,7 +93,6 @@ export default function SubmitWordlePage() {
         body: JSON.stringify({ 
             guesses: guesses, 
             rawResult: rawResultGrid 
-            // userId, date, submittedAt will be handled server-side
         }),
       });
 
@@ -110,11 +101,10 @@ export default function SubmitWordlePage() {
       if (!response.ok) {
         throw new Error(data.message || 'Failed to submit result.');
       }
-      // --- End API Call ---
 
       setSubmitStatus('success');
       setSubmitMessage(data.message || 'Wordle result submitted successfully!');
-      setWordleResult(''); // Clear the textarea on success
+      setWordleResult('');
 
     } catch (error) {
       setSubmitStatus('error');
@@ -134,10 +124,8 @@ export default function SubmitWordlePage() {
             transition={{ duration: 0.5 }}
             className="relative"
           >
-            {/* Background glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-green-500/10 via-teal-500/10 to-cyan-500/10 rounded-3xl blur-3xl -z-10"></div>
             
-            {/* Card content */}
             <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-2xl p-8 shadow-xl">
               <div className="text-center mb-8">
                 <motion.h2

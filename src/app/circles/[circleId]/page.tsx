@@ -7,17 +7,16 @@ import PageLayout from '@/components/PageLayout';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from 'next-auth/react';
 
-// Define the structure for member data expected from the API
 interface CircleMemberWithScore {
   id: string;
   name: string | null;
-  guesses: number | null; // null if no score submitted for today
+  guesses: number | null;
   raw_result: string | null;
 }
 
 export default function CircleDetailPage() {
   const params = useParams();
-  const circleId = params.circleId as string; // Get circleId from URL
+  const circleId = params.circleId as string;
   const { data: session, status } = useSession();
   
   const [circleName, setCircleName] = useState<string | null>(null);
@@ -25,20 +24,16 @@ export default function CircleDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // State for modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<CircleMemberWithScore | null>(null);
 
-  // Auth Check
   useEffect(() => {
     if (status === 'unauthenticated') {
       redirect(`/login?callbackUrl=/circles/${circleId}`);
     }
   }, [status, circleId]);
 
-  // Data Fetching
   useEffect(() => {
-    // Only fetch if authenticated and circleId is available
     if (status === 'authenticated' && circleId) {
       setIsLoading(true);
       setError(null);
@@ -47,10 +42,9 @@ export default function CircleDetailPage() {
         try {
           const response = await fetch(`/api/circles/${circleId}`);
           
-          const data = await response.json(); // Try to parse JSON regardless of status
+          const data = await response.json();
 
           if (!response.ok) {
-            // Use message from API response if available, otherwise default
             throw new Error(data.message || `Error: ${response.statusText}`);
           }
 
@@ -69,9 +63,8 @@ export default function CircleDetailPage() {
 
       fetchCircleData();
     }
-  }, [status, circleId]); // Re-run if auth status or circleId changes
+  }, [status, circleId]);
 
-  // Helper function to display score
   const renderScore = (guesses: number | null) => {
     if (guesses === null) {
       return <span className="text-xs text-gray-500 italic">Not submitted</span>;
@@ -82,19 +75,16 @@ export default function CircleDetailPage() {
     return <span className="font-bold text-green-400">{guesses}/6</span>;
   };
 
-  // Function to open the modal
   const handleMemberClick = (member: CircleMemberWithScore) => {
     setSelectedMember(member);
     setIsModalOpen(true);
   };
 
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedMember(null);
   };
 
-  // Render Loading State
   if (status === 'loading' || isLoading) {
     return (
       <PageLayout>
@@ -106,7 +96,6 @@ export default function CircleDetailPage() {
     );
   }
 
-  // Render Error State
   if (error) {
     return (
       <PageLayout>
@@ -123,7 +112,6 @@ export default function CircleDetailPage() {
     );
   }
 
-  // Render Content
   return (
     <PageLayout>
       <div className="min-h-screen bg-black pt-24 px-4 sm:px-6 lg:px-8 pb-20">
@@ -169,13 +157,10 @@ export default function CircleDetailPage() {
               <p className="text-gray-500 text-center py-4">No members found in this circle.</p>
             )}
           </motion.div>
-            
-          {/* TODO: Add invite code display and other features here */}
 
         </div>
       </div>
 
-      {/* Modal Implementation */}
       <AnimatePresence>
         {isModalOpen && selectedMember && (
           <motion.div
@@ -214,4 +199,4 @@ export default function CircleDetailPage() {
       </AnimatePresence>
     </PageLayout>
   );
-} 
+}

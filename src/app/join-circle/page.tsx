@@ -15,7 +15,6 @@ export default function JoinCirclePage() {
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
 
-  // Handle auth status
   if (status === 'loading') {
     return (
       <PageLayout>
@@ -41,11 +40,6 @@ export default function JoinCirclePage() {
       setFormError('Invite code cannot be empty.');
       return;
     }
-    // Basic check for likely code length (optional)
-    // if (codeToSubmit.length !== 8) {
-    //   setFormError('Invalid code format.');
-    //   return;
-    // }
 
     setIsSubmitting(true);
 
@@ -65,9 +59,8 @@ export default function JoinCirclePage() {
       }
 
       setFormSuccess(data.message || 'Successfully joined circle! Redirecting...');
-      setInviteCode(''); // Clear input
+      setInviteCode('');
       
-      // Redirect to the dashboard after a short delay
       setTimeout(() => {
         router.push('/dashboard'); 
       }, 2000);
@@ -89,10 +82,8 @@ export default function JoinCirclePage() {
             transition={{ duration: 0.5 }}
             className="relative"
           >
-            {/* Background glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-teal-500/10 via-cyan-500/10 to-sky-500/10 rounded-3xl blur-3xl -z-10"></div>
             
-            {/* Card content */}
             <div className="bg-gray-900/70 backdrop-blur-md border border-gray-800 rounded-2xl p-8 shadow-xl">
               <div className="text-center mb-8">
                 <motion.h2
@@ -148,8 +139,8 @@ export default function JoinCirclePage() {
                     value={inviteCode}
                     onChange={(e) => {
                       setInviteCode(e.target.value);
-                      if(formError) setFormError(''); // Clear error on change
-                      if(formSuccess) setFormSuccess(''); // Clear success on change
+                      if(formError) setFormError('');
+                      if(formSuccess) setFormSuccess('');
                     }}
                     className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-gray-200 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all duration-200 font-mono tracking-widest uppercase"
                     placeholder="ABCDEFGH"

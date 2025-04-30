@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 export default function TestLayoutPage() {
   const { data: session, status } = useSession();
   
-  // Log session changes - debugging only
   useEffect(() => {
     console.log('Auth status:', status);
     console.log('Session data:', session);
